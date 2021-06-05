@@ -193,7 +193,7 @@ public class Test {
 }
 ```
 
-## Class Loader
+## What happened when a *class* is initialized?
 
 **When the program uses a *class* that has not been loaded into the memory, the system will initialize the *class* with the following steps**
 
@@ -207,6 +207,39 @@ public class Test {
    - initializtion of the new *class* is done by JVM
    - if the super class has not been initialize, then the super class will be initialized
 
+```java
+public class Test {
+  	public static void main(String[] args) {
+      	A a = new A();
+      	System.out.println(A.i); // print 100
+    }
+  	
+  	/*
+  			1. load data to the memory, a java.lang.Class object is created
+  			2. link, m = 0 (static int type has default value 0)
+  			3. initialization, the static codes will be merged as follow:
+  						<clinit>() {
+                  System.out.println("static code block initialized");
+                  m = 300;
+                  m = 100;
+  						}
+  	*/
+  	
+  	class A {
+      	static {
+          	System.out.println("static code block initialized");
+          	m = 3;
+        }
+      
+      	static int m = 1;
+      
+      	public A() {
+          	System.out.println("initialize A with no parameter constructor");
+        }
+    }
+}
+```
+
 ### Memory Analysis
 
 - stack
@@ -214,9 +247,62 @@ public class Test {
 - Heap
   - the corresponding *java.lang.Class* object for every *class* in methods
   - *class* object instances
+    - each has a link to the *Class* binary data in methods
 - methods (a special heap)
   - *class* binary data
     - static variables
     - static methods
     - *final* variables
   - every *class* data will have a link to a *java.lang.Class* object in heap
+
+## When does *class* initialization happen?
+
+- Initiative reference to *class* (will definitely happen)
+  - when JVM starts, initialize the *class* in which *main()* is
+  - when creating a new instance
+  - access static variables or static methods of a *class* (except for *final* variables)
+  - when we initialize a *class* whose super class has not been initialised, its super class will be first initialized
+  - Reflection (e.g. Class.forName())
+- passive reference to *class* (not happen)
+  - Access a *class*'s static field
+  - access *final* variables
+  - define an array
+
+```java
+package learn.java.reflection;
+
+public class Test {
+  	public static void main(String[] args) throws ClassNotFoundException {
+      	
+      	// initiative reference
+      	// class initialization will happen
+      	Son son = new Son();
+      
+      	// reflection causes initiative reference
+      	// class initialization will happen
+      Class c = Class.forName("learn.java.reflection.Father");
+    }
+  
+  	// access to static fields
+  	// will not happen
+  	System.out.println(Son.a);
+  
+  	// define an array
+  	// will not happen
+  	Son[] arr = new Son[5];
+  
+  	// access to final variable
+  	// will not happen
+  	System.out.println(Son.F);
+}
+
+class Father {
+  	static int a = 1;
+}
+
+class Son {
+  	static int b = 2;
+  	static final F = 3;
+}
+```
+
