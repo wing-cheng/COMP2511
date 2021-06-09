@@ -119,14 +119,17 @@ public class Person {
 
 ```java
 public interface Cook {
-  	public void CrackEgg();
-  	public void FryRice();
+  	public void crackEgg();
+  	public void fryRice();
+  	default public void wash() {
+      	System.out.println("Wash potatos!");
+    }
 }
 
 public class Chef implements Cook {
   	// implemnetation of methods
-  	public void CrackEgg() {...}
-  	public void FryRice() {...}
+  	public void crackEgg() {...}
+  	public void fryRice() {...}
 }
 ```
 
@@ -164,7 +167,9 @@ class Child2 extends Parent {
 
 
 
-# Constructors
+# Method Overloading
+
+## Constructors
 
 - if no constructor is defined in the class
   - a no-argument constructor is implicitly inserted
@@ -182,7 +187,9 @@ public class Test {
   	public int d;
   	
   	// constructors overloading
-  	public Test() {}
+  	public Test() {
+      	// super() is implicitly inserted
+    }
   	public Test(int a) {
       	this();
       	this.a = a;
