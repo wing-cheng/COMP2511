@@ -1,6 +1,7 @@
 # Class Design
 
 - make data *private*
+  - or make data *public* and *final*
 - make getter + setter methods for data
 - always initialize data
 

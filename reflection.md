@@ -306,3 +306,98 @@ class Son {
 }
 ```
 
+# Class loader
+
+- loads java classes during runtime dynamically to 
+- transform the static data into data structure in methods
+- create a new *java.lang.Class* instance that represents this *class*
+- *classes* in class loader will be cached for a while
+- JVM GC will collect these *Classes*
+
+#### Custom class loader --> system/application class loader --> extension class loader --> bootstrap (root) class loader
+
+## Get class loader
+
+```java
+// get system/application class loader
+ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+
+// get extension class loader
+ClassLoader extClssLoader = systemClassLoader.getParent();
+
+// get bootstrp class loader
+// bootStrapClassLoader will be null
+ClassLoader bootStrapClassLoader = extClssLoader.getParent();
+```
+
+## Delegation Model
+
+on the request to find a class or resource,a *ClassLoader* instance will delegate tbe search of the class or resource to the parent class
+
+1. user requests to load an application class into JVM
+2. system class loader delegates the loading of this class to its parent class (extension class loader)
+3. extension class loader delegates the loading of this class to its parent class (bootstrap class loader)
+4. if bootstrap class loader fails to load this class, extension class loader will try to load this class
+5. if extension class loader fails to load this class, system class loader will try to load this class
+
+# Get *class* structure during runtime
+
+We can get the followings during runtime using **reflection**:
+
+- fields
+- methods
+- constructors
+- superclasses
+- interfaces
+- Annotations
+
+```java
+package learn.java.reflection;
+
+public class User {
+  	private String name;
+}
+```
+
+```java
+package learn.java.reflection;
+
+public class Test {
+  	public static void main(String[] args) {
+      	Class c1 = User.getClass();
+      
+      	// get class name
+      	// package name + class name
+      	System.out.println(c1.getName());		// "learn.java.reflection.User"
+      	System.out.println(c1.getSimpleName());		// "User"
+      
+      	// get public fields
+      	Fields f1 = c1.getFields();
+      	for (Field f : f1) {
+          	System.out.println(f);
+        }
+      
+      	// get all fields
+      	f1 = c1.getDeclaredFields();
+      	for (Field f : f1) {
+          	System.out.println(f);
+        }
+      
+      	// get one public field
+      	// given that we know there is a such field and its name
+      	Field name = c1.getField("name");
+      
+      	// get one field
+      	name = c1.getDeclaredField("name");		// "private learn.java.reflection.User.name"
+      
+      	// get public methods
+      	// also gets its superclass's public methods i.e. Object
+      	Method[] methods = c1.getMethods();
+      	// get all methods
+      	// no method from its superclass
+      	Method[] declaredMethods = c1.getDeclaredMethods();
+      	
+    }
+}
+```
+
