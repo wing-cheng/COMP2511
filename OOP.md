@@ -11,6 +11,96 @@
 
 - if a concept can not represented by a numbe or a string, most likely it is a class
 
+## Principle#1: Law of Demeter (Principle of Least Knowledge)
+
+**Talk Only to Your Friends**
+
+A method of an object should only invoke methods of
+
+- the object itself
+- the objects passed at a parameter
+- objects instantiated inside this method
+- **not** objects returned by a method
+
+```java
+// ! incorrect
+obj.get(name).get(thing).remove(something)
+// correct
+obj.remove(something)
+```
+
+## Principle#2: Liskov Substitution Principle
+
+**Well-designed inheritance**
+
+- a class should be substituted by its subclass
+
+### What wrong with Square-is-rectangle relationship?
+
+TODO add example
+
+```java
+public class Reactangle {
+  	protected int width;
+  	protected int length;
+  	public int getArea() { return this.width * this.length; }
+  	public Reactangle(int width, int length) {...}
+  	public void setWidth(int width) {...}
+  	public void setLength(int length) {...}
+}
+
+class Square extends Rectangle {
+  	@Override
+  	public int getArea() {return this}
+}
+```
+
+#### The Correct Way
+
+- use composition instead of inheritance
+
+```java
+public class Rectangle {...}
+```
+
+```java
+public class Square {
+  	private Rectangle rectangle;
+}
+```
+
+## Rules of Method Overriding
+
+- the argument list should be same as that of the overriden method
+- the access level **cannot** be more restrictive than the overriden method
+  - if the overriden method is *public*, then the overriding one cannot be *private* or *protected*
+- *final* methods **cannot** be overriden
+- constructor methods **cannot** be overriden
+- the returned type of the overrding method should be the **same** or **sub-type** of  the overriden one
+
+### Static Methods
+
+- static method can be defined in subclass
+  - the super method will be hidden by the drived class
+
+## Refactoring
+
+- No change in external behaviour
+- Test-driven
+- before u start refactoring, test cases should be ready
+
+# Common Bad Codes Smells
+
+- duplicated code
+- long method
+- Long parameter list
+- large class
+- divergent change
+  - when a class is commonly changed in different ways for different reasons
+  - this class must be doing too many things
+- Shotgun surgery
+  - when u have to make a lot of little changes to a lot of different classes
+
 # Dependency Relationships
 
 ## Inheritance Relationship
@@ -206,6 +296,35 @@ public class Test {
   	public Test(int a, int b, int c, int d) {
       	this(a, b, c);
       	this.d = d;
+    }
+}
+```
+
+
+
+# Method Forwarding
+
+- a class *A* can access all or some methods of another class *B* by including a *B* instance in *A*
+  - no inheritance
+  - use a "has-a" association relationship
+
+```java
+class Car {
+  	public void fastMove {...}
+}
+
+/**
+	Before having a car:
+			a Person can "move"
+  After having a car:
+  		a Person can "fast move" like a Car
+*/
+public class Person {
+  	private Car car;
+  	public void move {...}
+  	public static void main(String[] args) {
+      	this.car = new Car();
+      	this.car.fastMove();
     }
 }
 ```
