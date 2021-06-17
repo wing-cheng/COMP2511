@@ -101,6 +101,42 @@ public class Square {
 - Shotgun surgery
   - when u have to make a lot of little changes to a lot of different classes
 
+## Improve the Design
+
+### Encapsulation
+
+- protect data and behaviour in one part of your application from another part of application
+
+### Delegation
+
+- The act of one object forwarding an operation to another object to be performed on behalf of the first object
+
+### #1 Extract method
+
+- find logic clump and encapsulate it into a method
+  - e.g. *switch* statement
+- Identify changing and non-changing variables
+  - Non-changing variables can be passed as a parameter
+
+### #2 Rename variable
+
+- for more effectively communicate what u r doing
+
+### #3 Move method
+
+- a method should be in the object whose data is used in the method
+
+### #4 Replace temp with query
+
+### #5 Replace conditional logic with Polymorphism
+
+- replace *switch* statement with 
+  - [Polymorphism (method overriding)](# Method Overriding (Polymorphism))
+  - [move method](# #3 Move method)
+- replace inheritance with
+  - [composition](# Composition Relationship)
+  - Delegation - delegate the functionality to another class
+
 # Dependency Relationships
 
 ## Inheritance Relationship
