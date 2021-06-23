@@ -37,8 +37,6 @@ obj.remove(something)
 
 ### What wrong with Square-is-rectangle relationship?
 
-TODO add example
-
 ```java
 public class Reactangle {
   	protected int width;
@@ -50,8 +48,12 @@ public class Reactangle {
 }
 
 class Square extends Rectangle {
+  	// Problem: do I return length^2 or width^2?
   	@Override
-  	public int getArea() {return this}
+  	public int getArea() {
+        return Math.pow(this.length, 2);
+    }
+  	// Problem: should I use width or length to calculate area?
 }
 ```
 
@@ -87,7 +89,7 @@ public class Square {
 
 - No change in external behaviour
 - Test-driven
-- before u start refactoring, test cases should be ready
+- test cases should be ready before refactoring
 
 # Common Bad Codes Smells
 
@@ -367,3 +369,66 @@ public class Person {
 
 
 
+# Design Patterns
+
+#### Design Pattern Categories
+
+- Behavioural patterns
+- Structural patterns
+- Creatioal patterns
+
+## Pattern #1: Strategy Pattern
+
+- behavioural pattern
+
+### Intent
+
+- define a family of algorithms, encapsulate each one, and make them interchangeable
+
+### Uses
+
+- related classes differ in their behaviour
+- a context can be benefited from different variants of an algorithm
+- avoid multiple condition statements
+  - each condition branch can be placed in their own concrete strategy class
+
+### Benefits
+
+- use composition over inheritance
+  - better decoupling between behaviour and context class that uses this behaviour
+
+### Liabilities
+
+- increase the number of objects
+- clients must be aware of the different strategy
+
+## Pattern #2: State Pattern
+
+### Finite-State Machine
+
+- an abstract machine which can be in exactly **1** of a finite number of states
+  - can change state from one to another in response to some external input
+  - The change from one to another is called **transition**
+- a finite-state machine is defined by
+  - a list of states
+  - conditions for each transition
+  - initial state
+
+#### Implementation
+
+- one class for each state
+- one method for each input
+
+## Pattern #3: Observer Pattern
+
+- to implement distributed event handling systems, in "event driven" programming
+- In the oberver pattern
+  - Objects, called *subjects* (*observable* or *publisher*), each maintains a list of *dependents* (*observers*)
+  - Notifies the *observers* **automatically** of any state changes in the *subject*, usually by calling one of their method
+    - e.g. Excel, a change in a cell will trigger changes in depending cells
+- graphical user interface libraries use observer pattern extensively
+- defines a one-to-many relationship between a *subject* and *observers*
+
+## Pattern #4: Composite Pattern
+
+TODO
