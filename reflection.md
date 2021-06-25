@@ -356,6 +356,9 @@ package learn.java.reflection;
 
 public class User {
   	private String name;
+  	public User(String name) { this.name = name; }
+  	public String getName() { return this.name; }
+  	public void setName(String name) { this.name = name; }
 }
 ```
 
@@ -393,11 +396,73 @@ public class Test {
       	// get public methods
       	// also gets its superclass's public methods i.e. Object
       	Method[] methods = c1.getMethods();
-      	// get all methods
+      	// get all methods, inclu. private methods
       	// no method from its superclass
       	Method[] declaredMethods = c1.getDeclaredMethods();
       	
+      	// get a specific method
+      	Method getName = c1.getMethod("getName", null);
+      	Method setName = c1.getMethod("setName", String.class);
+      
+      	// get constructors
+      	Constructor[] constructors = c1.getConstructors();
+   			constructor = getDeclaredConstructors();   
     }
 }
 ```
+
+
+
+# Dynamically create a class object
+
+```java
+package learn.java.reflection;
+
+public class User {
+  	private String name;
+  	public User() {}
+  	public User(String name) { this.name = name; }
+  	public String getName() { return this.name; }
+  	public void setName(String name) { this.name = name; }
+}
+```
+
+```java
+public class CreateObject {
+  	public static void main(String[] args) {
+      	// obtain the class object
+      	Class c1 = Class.forName("learn.refleaction.User");
+    
+        // create a new instance
+        // this calles the no parameter constructor
+        User user1 = (User)c1.newInstance();
+      
+        // create a User object using the constructor with parameter
+        Constructor userConstructor = c1.getDeclaraedConstructor(String.class);
+        User user2 = (User)userConstructor.newInstance("User2");
+  
+        // call a method using reflection
+        Method setName = c1.getDeclaredMethod("setName", String.class);
+      	// parameters
+      	// 		1. a method object
+      	//		2. method parameters
+  			setName.invoke(user2, "newName");
+      	
+				// this will throw an error
+      	// as I tried to access a private field User.name
+      	Field userName = c1.getDeclaredField("name");
+      	name.set(user2, "newName2");
+      	
+      	// the right way, but insecure and not efficient
+      	name.setAccessible(true);
+      	name.set(user2, "newName2");
+    }
+}
+```
+
+## Performance Analysis
+
+normal method << *setAccessible(true)* << reflection
+
+# Generic Types
 
