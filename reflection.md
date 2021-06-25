@@ -464,5 +464,51 @@ public class CreateObject {
 
 normal method << *setAccessible(true)* << reflection
 
-# Generic Types
+# Generics
+
+## Generic types of method parameter
+
+```java
+import java.util.List;
+import java.util.Map;
+
+public class Test {
+  	
+  	// defind some methods
+  	public void method1(Map<String, Integer> map, List<Integer> lst) {
+      	System.out.println("method1");
+    }
+  	public Map<String, Integer> method2() {
+      	return null;
+    }
+  
+  	public static void main(String[] args) {
+      	Method method01 = Test.class.getMethod("method1", Map.class, List.class);
+      	Type[] method1ParameterTypes = method01.getGenericTypes();
+      	for (Type type : method1ParameterTypes) {
+            // prints "java.util.Map<...>", "java.util.List<...>"
+            System.out.println(type);
+            // but how do we get String and Integer out of the Map and List above?
+          	if (type instanceof ParameterizedType) {
+            		Type[] actualTypes = ((ParameterizedType)type).getActualTypeArguments;
+            		for (Type at : actualTypes) {
+                		// prints "class java.lang.String" "class java.lang.Integer"
+                		System.out.println(at);
+              	}
+          	}
+        }
+      
+      
+      	Method method02 = Test.class.getMethod("method2", null);
+      	Type type2 = method02.getGenericReturnedType();
+      	if (type2 instanceof ParameterizedType) {
+          	Type[] actualType2 = ((ParameterizedType)type2).getActualTypeArguments();
+          	for (Type at : actualType2) {
+              	// prints "class java.lang.Integer"
+              	System.out.println(at);
+            }
+        }
+    }  	
+}
+```
 
